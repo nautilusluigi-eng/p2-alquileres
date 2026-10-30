@@ -80,5 +80,30 @@ public class Alquiler {
     Alquiler alquiler2 = new Alquiler(vehiculo2, cliente1, hoy, hoy.plusDays(3));
     System.out.println(alquiler2.toString());
     System.out.println("-----------------------------------------------");
+    // Demo patrón Estrategia
+    LocalDate ini = LocalDate.of(2026, 11, 1);
+    LocalDate fin = LocalDate.of(2026, 11, 10);
+    for (PoliticasDePrecios p : PoliticasDePrecios.values()) {
+        System.out.println(p + ": " + alquiler1.calcularPrecioAlquiler(ini, fin, p, vehiculo1));
+    }
 }
+
+    public int calcularPrecioAlquiler(LocalDate fechaInicio, LocalDate fechaFin, PoliticasDePrecios politica, Vehiculo vehiculo){
+
+        IcalculadorPrecio calculador;
+        switch (politica){
+            case TemporadaAlta:
+                calculador= new CalculadorPrecioTemporadaAlta();
+                break;
+            case Oferton:
+                calculador = new CalculadorPrecioOferton();
+                break;
+            case ClienteFrecuente:
+                calculador = new CalculadorPrecioClienteFrecuente();
+                break;
+            default:
+                calculador = new CalculadorPrecioNormal();
+        }
+        return calculador.calcularPrecioAlquiler(fechaInicio, fechaFin, vehiculo);
+    }
 }
