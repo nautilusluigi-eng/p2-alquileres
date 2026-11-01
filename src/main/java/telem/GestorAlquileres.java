@@ -1,6 +1,11 @@
 package telem;
 
 import java.time.LocalDate;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class GestorAlquileres {
     
@@ -156,7 +161,37 @@ public class GestorAlquileres {
 
     // La interfaz de usuario y la lógica de negocio suelen implementarse por separado.
     // Aquí se integran ambas por simplicidad, pero en una aplicación real hay que separarlas.
+    public void guardarAlquileres(String nombreFichero){
 
+        try{
+            FileWriter fw = new FileWriter(nombreFichero);
+            for (Alquiler alq : alquileres){
+                if (alq != null) {
+                    fw.write(alq + "\n");
+                }
+                
+            }
+            fw.close();
+            System.out.println("Alquileres guardados en " + nombreFichero);
+        } catch (IOException e){
+            System.err.println("Error al guardar: " + e.getMessage());
+        }
+    }
+
+    public void cargarAlquileres(String nombreFichero){
+
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(nombreFichero));
+            String linea;
+            while ((linea = in.readLine()) != null){
+                agregarAlquiler(new Alquiler(linea));
+            }
+            in.close();
+            System.out.println("Alquileres cargados desde " + nombreFichero);
+        } catch (IOException e){
+            System.err.println("Error al cargar: " + e.getMessage());
+        }
+    }
 
     public void menuPrincipal(){
         
@@ -183,6 +218,8 @@ public class GestorAlquileres {
                 System.out.println("(1) seleccionar coche para alquilar");
                 System.out.println("(2) entregar un coche alquilado");
                 System.out.println("(3) listar su histórico de alquileres");
+                System.out.println("(4) guardar los alquileres en un fichero");
+                System.out.println("(5) cargar alquileres desde un fichero");
 
                 int opcion = KeyBoard.readInt();
                 System.out.println("opción escogida: " + opcion);
@@ -238,10 +275,24 @@ public class GestorAlquileres {
                     case 3:
                         Alquiler alqs [] = obtenerAlquileres(cliente);
                         for (Alquiler q: alqs){
-                            System.out.print(q);
+                            System.out.println(q);
                         }
+                        break;
+                    
+            
+                    
+                    case 4:
+                        guardarAlquileres("alquileres.txt");
+                        break;
+                    
+                    case 5:
+                        cargarAlquileres("alquileres.txt");
+                        break;
+
                     default:
                         break;
+
+
                 }
             }
             else{
